@@ -1,3 +1,4 @@
+import cloudinary from "../lib/cloudinary.js";
 import { generateToken } from "../lib/utils.js";
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
@@ -56,7 +57,7 @@ export const login = async (req, res) => {
 
     if (!isPasswordCorrect) {
       return res.status(400).json({
-        message: "Données utilisateur invalides",
+        message: "User data invalid",
       });
     }
     generateToken(user._id, res);
@@ -82,4 +83,29 @@ export const logout = (req, res) => {
   }
 };
 
-export const updateProfile = (req, res) => {};
+export const updateProfile = async (req, res) => {
+  try {
+    const { profileAvatar } = req.body;
+    const userId = req.user._id;
+
+    if (!profileAvatar) {
+      return res.status(400).json({
+        message: "Avatar is require",
+      });
+    }
+    const uploadResponse = await cloudinary.uploader.upload(profileAvatar);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        profileAvatar: uploadResponse.secure_url,
+      },
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log("Error in updateProfile ", error);
+  }
+};
