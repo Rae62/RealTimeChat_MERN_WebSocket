@@ -5,6 +5,8 @@ import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/SignUpPage";
 import ProfilePage from "./pages/ProfilePage";
 import SettingsPage from "./pages/SettingsPage";
+import UserNotConnected from "./components/ProtectRoutes/UserNotConnected";
+import UserConnected from "./components/ProtectRoutes/UserConnected";
 
 export const router = createBrowserRouter([
   {
@@ -13,19 +15,35 @@ export const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <HomePage />,
+        element: (
+          <UserNotConnected>
+            <HomePage />
+          </UserNotConnected>
+        ),
       },
       {
         path: "/login",
-        element: <LoginPage />,
+        element: (
+          <UserConnected>
+            <LoginPage />
+          </UserConnected>
+        ),
       },
       {
         path: "/signup",
-        element: <SignUpPage />,
+        element: (
+          <UserConnected>
+            <SignUpPage />
+          </UserConnected>
+        ),
       },
       {
         path: "/profile",
-        element: <ProfilePage />,
+        element: (
+          <UserNotConnected>
+            <ProfilePage />
+          </UserNotConnected>
+        ),
       },
       {
         path: "/settings",
