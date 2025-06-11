@@ -7,8 +7,8 @@ export const useAuthStore = create((set) => ({
   isSigningUp: false,
   isLoggingIn: false,
   isUpdatingProfile: false,
-
   isCheckingAuth: true,
+  onlineUsers: [],
 
   checkAuth: async () => {
     try {
@@ -23,6 +23,21 @@ export const useAuthStore = create((set) => ({
   },
 
   signUp: async (dataOfTheForm) => {
+    set({ isLoggingIn: true });
+
+    try {
+      const res = await axiosInstance.post("/auth/sign-in", dataOfTheForm);
+      set({ authUser: res.data });
+      toast.success("SignIn successfully ");
+    } catch (error) {
+      console.log("Error while login", error);
+      toast.error(error.response.data.message);
+    } finally {
+      set({ isLoggingIn: false });
+    }
+  },
+
+  login: async (dataOfTheForm) => {
     set({ isSigningUp: true });
 
     try {
@@ -45,6 +60,20 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       console.log("Error while logout", error);
       toast.error("Error while logout");
+    }
+  },
+
+  updateProfile: async (data) => {
+    set({ isUpdatingProfile: true });
+    try {
+      const res = await axiosInstance.put("/auth/update", data);
+      set({ authUser: res.data });
+      toast.success("Profile updated sucessfully");
+    } catch (error) {
+      console.log("Error while updating the avatar", error);
+      toast.error("Error while updating the avatar");
+    } finally {
+      set({ isUpdatingProfile: false });
     }
   },
 }));

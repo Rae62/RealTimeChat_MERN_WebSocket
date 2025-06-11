@@ -85,20 +85,20 @@ export const logout = (req, res) => {
 
 export const updateProfile = async (req, res) => {
   try {
-    const { profileAvatar } = req.body;
+    const { avatar } = req.body;
     const userId = req.user._id;
 
-    if (!profileAvatar) {
+    if (!avatar) {
       return res.status(400).json({
         message: "Avatar is require",
       });
     }
-    const uploadResponse = await cloudinary.uploader.upload(profileAvatar);
+    const uploadResponse = await cloudinary.uploader.upload(avatar);
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
-        profileAvatar: uploadResponse.secure_url,
+        avatar: uploadResponse.secure_url,
       },
       {
         new: true,
