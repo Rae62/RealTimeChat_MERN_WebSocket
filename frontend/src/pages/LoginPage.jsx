@@ -11,11 +11,11 @@ function LoginPage() {
     password: "",
   });
 
-  const { signUp, isLoggingIn } = useAuthStore();
+  const { signIn, isLoggingIn } = useAuthStore();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    signUp(formData);
+    signIn(formData);
   };
 
   return (
